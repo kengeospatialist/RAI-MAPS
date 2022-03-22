@@ -46,34 +46,59 @@ $(window).scroll(function (e) {
 
 
 var position = mapDescContainer.scrollTop();
-
+var desc_id = 1;
 mapDescContainer.scroll(function (e) {
     var height = $(this).scrollTop();
-    var mapChilds = mapDescContainer.children('div');
+    var mapChilds = mapDescContainer.children('div').length;
+    //console.log(mapChilds);
 
+    var direction = "scrollDown";
     if (height > position) {
         //console.log('scrollDown');
+        direction = "scrollDown";
     }
     else {
         //console.log('scrollUp');
-
+        direction = "scrollUp";
     }
     position = height;
 
-    mapChilds.each(function () {
+    /*mapChilds.each(function () {
         var mapId = ($(this).data("map"));
         if (isOnScreen($(this))) {
-
+            //console.log(mapId);
+            //$("#" + mapId).removeClass("d-none");
         }
         else {
+            //$("#" + mapId).addClass("d-none");
+        }
+    });*/
+
+    //id 1st element is past screen show second to nth
+    var desc_item = $("#desc-" + desc_id);
+
+    if (isOnScreen(desc_item) == true) {
+        if (direction === "scrollUp") {
+            if (desc_id > 1) {
+                desc_id = desc_id - 1;
+                $('.carousel').carousel("prev");
+            }
+        }
+        else {
+            if (desc_id < mapChilds) {
+                desc_id = desc_id + 1;
+                $('.carousel').carousel("next");
+            }
 
         }
-    });
+        console.log(desc_id);
+        $('.carousel').carousel("pause");
+    }
+
 });
 
 function isOnScreen(element) {
-    var curTop = element.offset().top;
-    var curBottom = element.offset().top + element.outerHeight();
-    var screenHeight = mapDescContainer.height();
-    return (curTop < screenHeight) ? false : true;
+    console.log($("#" + element.attr("id") + ':visible').visible(false, true) + " id >" + element.attr("id"));
+    return $("#" + element.attr("id") + ':visible').visible(false, true);
+    //return elementBottom > viewportTop;//&& elementTop < viewportBottom;
 }
